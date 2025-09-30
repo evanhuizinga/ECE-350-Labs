@@ -1,10 +1,17 @@
-function [y, ty] = my_cont_conv(xt, t, ht)
-    t_step = t(2) - t(1);
+function [y, ty] = my_cont_conv(x, tx, h, th)
+    t_step_x = tx(2) - tx(1);
+    t_step_h = th(2) - th(1);
 
-    y = conv(xt, ht) * t_step;
+    if abs(t_step_x - t_step_h) > 1e-10
+        error('time steps for x and h must be equal');
+    end
+    
+    t_step = t_step_x;
 
-    t_start = t(1) + t(1);
-    t_end = t(end) + t(end);
+    y = conv(x, h) * t_step;
 
-    ty = linspace(t_start, t_end, length(y));
+    t_start = tx(1) + th(1);
+    t_end   = tx(end) + th(end);
+
+    ty = t_start : 0.1 : t_end;
 end
